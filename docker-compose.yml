@@ -1,0 +1,57 @@
+version: "3"
+
+services:
+  database:
+    image: mysql:8
+    restart: always
+    container_name: twitter.vm-database
+    logging:
+      driver: none
+    environment:
+      - MYSQL_DATABASE=twitter
+      - MYSQL_ROOT_PASSWORD=root
+      - TZ=America/Sao_Paulo
+    command: "--default-authentication-plugin=mysql_native_password"
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: mysql --user=root --password=root -e 'SHOW databases;'
+
+  nginx:
+    image: nginx:1.15.8-alpine
+    container_name: twitter.vm-nginx
+    volumes:
+      - ./nginx/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+    links:
+      - app:app1
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+
+  redis:
+    image: redis:alpine
+    container_name: twitter.vm-redis
+    logging:
+      driver: none
+
+  app:
+    build: ./server
+    container_name: twitter.vm-app
+    restart: unless-stopped
+    depends_on:
+      - database
+      - redis
+      - migration
+    command: npm run start
+
+  migration:
+    build: ./migration
+    logging:
+      driver: none
+    container_name: twitter.vm-migration
+    restart: on-failure
+    depends_on:
+      - database
+    volumes:
+      - "./migration/database:/srv"
