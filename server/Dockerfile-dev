@@ -1,0 +1,15 @@
+FROM node:10.15.3-alpine
+ENV NODE_ENV=development
+
+WORKDIR /srv/www/server
+
+COPY ./server/ .
+
+RUN apk add --no-cache g++ make python bash && \
+  npm install && \
+  npm install nodemon -g && \
+  npm cache clean --force 
+
+EXPOSE 3000
+
+CMD npm run dev
