@@ -1,0 +1,10 @@
+{
+  "dev": {
+    "driver": "mysql",
+    "user": "root",
+    "password": "root",
+    "host": "database",
+    "database": "twitter",
+    "multipleStatements": true
+  }
+}

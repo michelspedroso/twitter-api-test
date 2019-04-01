@@ -1,0 +1,12 @@
+{
+  "name": "migrate",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "db-migrate up --config database.json -e prod",
+    "dev": "db-migrate up:all --config database.json -e dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
